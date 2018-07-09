@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Alarm_and_notiication_demo</string>
+    <string name="notification_hint">Please input your reminder</string>
+    <string name="set_time_text">set time</string>
+    <string name="set_date_text">set date</string>
+    <string name="set_reminder_confirm_text">Set remider</string>
+</resources>
