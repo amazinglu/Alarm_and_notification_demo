@@ -2,6 +2,8 @@ package com.example.amazinglu.alarm_and_notiication_demo;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,11 +15,26 @@ public class MainActivity extends AppCompatActivity {
     public static final String CHANNEL_ID = "default_channel";
 
     private NotificationChannel notificationChannel;
+    private AlarmReceiver alarmReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        /**
+         * register the alarm receiver
+         *
+         * in this example, we cannot use context-register receiver
+         * because in this way we need to register a receiver with intent filter
+         * if we create a empty intent filter, we cannot catch any broadcast
+         * https://stackoverflow.com/questions/8858692/trying-to-have-a-broadcast-receiver-with-no-filter
+         *
+         * only can use manifest-decline receiver
+         * */
+//        alarmReceiver = new AlarmReceiver();
+//        IntentFilter filter = new IntentFilter("android.intent.action.VIEW");
+//        this.registerReceiver(alarmReceiver, filter);
 
         if (notificationChannel == null) {
             createNotificationChannel();
@@ -37,6 +54,15 @@ public class MainActivity extends AppCompatActivity {
                     .add(R.id.fragment_container, MainFragment.newInstance(args))
                     .commit();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        /**
+         * unregister alarm receiver
+         * */
+//        this.unregisterReceiver(alarmReceiver);
     }
 
     /**
