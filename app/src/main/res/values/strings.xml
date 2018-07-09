@@ -6,4 +6,5 @@
     <string name="set_reminder_confirm_text">Set remider</string>
     <string name="channel_name">default_channel</string>
     <string name="channel_description">my default channel</string>
+    <string name="notification_title">Notification title</string>
 </resources>

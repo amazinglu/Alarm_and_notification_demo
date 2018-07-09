@@ -33,7 +33,8 @@ public class AlarmReceiver extends BroadcastReceiver {
                 resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, MainActivity.CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_launcher_background)
+                .setSmallIcon(R.drawable.baseline_calendar_today_black_18dp)
+                .setContentTitle(context.getResources().getString(R.string.notification_title))
                 .setContentText(reminder.text)
                 .setAutoCancel(true)
                 .setContentIntent(resultPendingIntent);
