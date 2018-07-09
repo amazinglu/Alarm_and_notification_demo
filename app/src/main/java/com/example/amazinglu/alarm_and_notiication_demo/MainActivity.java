@@ -1,5 +1,8 @@
 package com.example.amazinglu.alarm_and_notiication_demo;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
@@ -7,19 +10,24 @@ import com.example.amazinglu.alarm_and_notiication_demo.model.Reminder;
 
 public class MainActivity extends AppCompatActivity {
 
+    public static final String CHANNEL_ID = "default_channel";
+
+    private NotificationChannel notificationChannel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Reminder reminder = getIntent().getParcelableExtra(MainFragment.KEY_REMINDER);
+        if (notificationChannel == null) {
+            createNotificationChannel();
+        }
+
+        String reminderStr = getIntent().getStringExtra(MainFragment.KEY_REMINDER);
         int notificationId = getIntent().getIntExtra(MainFragment.KEY_NOTIFICATION_ID, -1);
 
         Bundle args = new Bundle();
-        if (reminder == null) {
-            reminder = new Reminder();
-        }
-        args.putParcelable(MainFragment.KEY_REMINDER, reminder);
+        args.putString(MainFragment.KEY_REMINDER, reminderStr);
         args.putInt(MainFragment.KEY_NOTIFICATION_ID, notificationId);
 
         if (savedInstanceState == null) {
@@ -28,6 +36,28 @@ public class MainActivity extends AppCompatActivity {
                     .beginTransaction()
                     .add(R.id.fragment_container, MainFragment.newInstance(args))
                     .commit();
+        }
+    }
+
+    /**
+     * https://developer.android.com/training/notify-user/build-notification
+     * Before you can deliver the notification on Android 8.0 and higher, you must register your
+     * app's notification channel with the system by passing an instance of NotificationChannel to
+     * createNotificationChannel()
+     * */
+    private void createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = getString(R.string.channel_name);
+            String description = getString(R.string.channel_description);
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            notificationChannel = new NotificationChannel(CHANNEL_ID, name, importance);
+            notificationChannel.setDescription(description);
+            // Register the notificationChannel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(notificationChannel);
         }
     }
 }

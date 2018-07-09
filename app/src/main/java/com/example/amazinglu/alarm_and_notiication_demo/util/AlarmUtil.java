@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 
 import com.example.amazinglu.alarm_and_notiication_demo.AlarmReceiver;
+import com.example.amazinglu.alarm_and_notiication_demo.MainActivity;
 import com.example.amazinglu.alarm_and_notiication_demo.MainFragment;
 import com.example.amazinglu.alarm_and_notiication_demo.model.Reminder;
 
@@ -34,9 +35,17 @@ public class AlarmUtil {
          * define the receiver of the alarm broadcast
          * */
         Intent intent = new Intent(context, AlarmReceiver.class);
-        intent.putExtra(MainFragment.KEY_REMINDER, reminder);
+        String reminderStr = ModelUtil.toJson(reminder);
+        intent.putExtra(MainFragment.KEY_REMINDER, reminderStr);
         /**
          * PendingIntent.getBroadcast means the pendingIntent will start a broadcast
+         *
+         * important !!!!:
+         * need to set the flag of pendIntent to PendingIntent.FLAG_UPDATE_CURRENT so that
+         * the intent extra can be sent to the target
+         *
+         * if using pendIntent, the Parcelable object can not be sent in intent extra
+         * use GSON instead
          * */
         PendingIntent alarmIntent = PendingIntent.getBroadcast
                 (context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);

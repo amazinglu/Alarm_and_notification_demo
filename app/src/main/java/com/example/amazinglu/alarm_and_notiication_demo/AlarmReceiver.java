@@ -6,37 +6,39 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 
 import com.example.amazinglu.alarm_and_notiication_demo.model.Reminder;
+import com.example.amazinglu.alarm_and_notiication_demo.util.ModelUtil;
+import com.google.gson.reflect.TypeToken;
 
 public class AlarmReceiver extends BroadcastReceiver {
-
-    public static final String CHANNEL_ID = "default_channel";
 
     @Override
     public void onReceive(Context context, Intent intent) {
         final int notificationId = 100;
-        Reminder reminder = intent.getParcelableExtra(MainFragment.KEY_REMINDER);
+        String reminderStr = intent.getStringExtra(MainFragment.KEY_REMINDER);
+        Reminder reminder = ModelUtil.toObject(reminderStr, new TypeToken<Reminder>(){});
 
         /**
          * build the notification
          * icon is required !!!
          * */
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_launcher_background)
-                .setContentText(reminder.text);
-
         Intent resultIntent = new Intent(context, MainActivity.class);
-        resultIntent.putExtra(MainFragment.KEY_REMINDER, reminder);
+//        resultIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        resultIntent.putExtra(MainFragment.KEY_REMINDER, reminderStr);
         resultIntent.putExtra(MainFragment.KEY_NOTIFICATION_ID, notificationId);
 
-        PendingIntent resultPendingIntent = PendingIntent.getActivity(context, 0, resultIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent resultPendingIntent = PendingIntent.getActivity(context, 0,
+                resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        builder.setContentIntent(resultPendingIntent);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, MainActivity.CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_launcher_background)
+                .setContentText(reminder.text)
+                .setAutoCancel(true)
+                .setContentIntent(resultPendingIntent);
 
-        NotificationManager nm = (NotificationManager)
-                context.getSystemService(Context.NOTIFICATION_SERVICE);
-        nm.notify(notificationId, builder.build());
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+        notificationManager.notify(notificationId, builder.build());
     }
 }

@@ -4,4 +4,6 @@
     <string name="set_time_text">set time</string>
     <string name="set_date_text">set date</string>
     <string name="set_reminder_confirm_text">Set remider</string>
+    <string name="channel_name">default_channel</string>
+    <string name="channel_description">my default channel</string>
 </resources>

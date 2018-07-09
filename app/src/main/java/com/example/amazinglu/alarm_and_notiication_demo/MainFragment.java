@@ -21,6 +21,8 @@ import android.widget.TimePicker;
 import com.example.amazinglu.alarm_and_notiication_demo.model.Reminder;
 import com.example.amazinglu.alarm_and_notiication_demo.util.AlarmUtil;
 import com.example.amazinglu.alarm_and_notiication_demo.util.DateUtil;
+import com.example.amazinglu.alarm_and_notiication_demo.util.ModelUtil;
+import com.google.gson.reflect.TypeToken;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -67,7 +69,13 @@ public class MainFragment extends Fragment {
         ButterKnife.bind(this, view);
 
         int notificationId = getArguments().getInt(KEY_NOTIFICATION_ID);
-        reminder = getArguments().getParcelable(KEY_REMINDER);
+        String reminderStr = getArguments().getString(KEY_REMINDER);
+
+        if (reminderStr == null) {
+            reminder = new Reminder();
+        } else {
+            reminder = ModelUtil.toObject(reminderStr, new TypeToken<Reminder>(){});
+        }
 
         // set up the text notifiew
         if (reminder.text != null) {
@@ -75,12 +83,6 @@ public class MainFragment extends Fragment {
             notificationTextView.setText(reminder.text);
         } else {
             notificationTextView.setVisibility(View.GONE);
-        }
-
-        // cancel the notification
-        if (notificationId != -1) {
-            ((NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE))
-                    .cancel(notificationId);
         }
 
         setDate.setOnClickListener(new View.OnClickListener() {

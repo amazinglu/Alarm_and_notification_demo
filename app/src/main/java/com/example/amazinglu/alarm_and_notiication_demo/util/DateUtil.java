@@ -12,12 +12,12 @@ public class DateUtil {
     private static DateFormat DateTimeFormat = new SimpleDateFormat("yyyy MM dd HH:mm", Locale.getDefault());
 
     public static String dateTimeToString(Date date) {
-        return DateTimeFormat.format(date);
+        return date == null ? null : DateTimeFormat.format(date);
     }
 
     public static Date StringToDateTime(String str) {
         try {
-            return DateTimeFormat.parse(str);
+            return str == null ? null : DateTimeFormat.parse(str);
         } catch (ParseException e) {
             e.printStackTrace();
             return  null;
